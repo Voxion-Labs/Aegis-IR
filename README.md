@@ -2,65 +2,64 @@
 
 # Aegis-IR
 
-### Deterministic Memory for Browser-Native Information Retrieval
+### Deterministic Linear Memory for Browser-Native Information Retrieval
 
 ![Research Type](https://img.shields.io/badge/Research%20Type-Applied%20Systems-58a6ff?style=for-the-badge)
 ![Architecture](https://img.shields.io/badge/Architecture-Zero--Backend-3fb950?style=for-the-badge)
 ![Kernel](https://img.shields.io/badge/Kernel-C%2B%2B%20Wasm-bc8cff?style=for-the-badge)
 
-> **Live Research Workbench:** [Open the Aegis-IR Demo](https://liambrooks-lab.github.io/Aegis-IR/)
+> **Live Research Workbench:** [Launch Aegis-IR](https://Voxion-Labs.github.io/Aegis-IR/)
 
 </div>
 
 ## Abstract
 
-**Aegis-IR** is an applied systems research project from **Voxion Labs** focused on eliminating V8 garbage-collection stutter in browser-native search. The core thesis is that allocation-heavy Vanilla JavaScript search can introduce visible main-thread pauses when the runtime is forced to reclaim thousands of short-lived query objects.
+**Aegis-IR** is an applied systems research project from **Voxion Labs** engineered around one hard constraint: browser-native search must not freeze the interface while users type.
 
-Aegis-IR moves the critical TF-IDF ranking path into an object-oriented **C++17** engine compiled to **WebAssembly**. Inside the Wasm module, the index and scoring structures live in deterministic **linear memory** instead of the JavaScript heap. During ranking, the engine traverses continuous numeric buffers rather than constructing transient JavaScript arrays, maps, and result objects.
+The project eliminates V8 garbage-collection stutter from the critical ranking path by compiling an object-oriented **C++17 TF-IDF engine** into **WebAssembly linear memory**. Instead of allocating thousands of transient JavaScript objects during query execution, Aegis-IR executes scoring over compact, continuous numeric buffers owned by the Wasm module.
 
-That memory boundary is the research point: by keeping the hot scoring loop outside V8's managed heap, Aegis-IR avoids garbage-collection pressure during retrieval and models **0 ms GC pause** behavior for the ranking path. The outcome is a static, zero-backend search architecture designed to preserve UI smoothness while the user types.
+That architectural move bypasses JavaScript heap allocation during ranking. The result is a retrieval path modeled with **0 ms GC pause** inside the scoring loop, sharply reducing main-thread blocking and preserving interactive responsiveness. Aegis-IR is not a cosmetic search widget. It is a memory-systems argument implemented as a static, zero-backend browser product.
 
 ## The Problem
 
 ### V8 Garbage Collection Stutter
 
-Vanilla JavaScript is excellent for interface orchestration, but search workloads can be hostile to managed heap behavior. A typical client-side search implementation repeatedly allocates:
+Vanilla JavaScript search looks clean until it meets real allocation pressure.
 
-- token arrays for every query,
-- temporary maps for term frequencies,
-- intermediate score objects,
-- result arrays,
-- highlighted snippets,
-- short-lived strings from normalization and matching.
+A typical client-side search implementation creates short-lived objects aggressively:
 
-During interactive search, this allocation pattern can happen on every keystroke. The ranking function may appear fast in isolation, but the surrounding object churn increases V8 heap pressure. When V8 decides to reclaim memory, garbage collection can pause execution on the main thread.
+- query token arrays,
+- normalized string copies,
+- per-document score objects,
+- term-frequency maps,
+- intermediate ranking arrays,
+- snippet/highlight structures,
+- temporary closures and iterator state.
 
-That pause is what users feel as stutter: the input hesitates, the UI freezes briefly, and the search experience stops feeling native. Aegis-IR treats this as a memory-management problem rather than a generic speed problem.
+During interactive search, that allocation pattern can repeat on every keystroke. V8 is forced to manage and reclaim this churn through garbage collection. When collection intersects with user input, rendering, or ranking, the main thread can stall.
+
+That stall is the failure mode: input hesitation, delayed rendering, and visible UI stutter. The ranking algorithm may be mathematically reasonable, but the memory model is unstable under pressure. Aegis-IR attacks that instability directly.
 
 ## The Solution
 
 ### Aegis-IR Linear Memory
 
-Aegis-IR isolates the allocation-heavy information retrieval kernel inside WebAssembly linear memory. Instead of representing the index as nested JavaScript objects, the C++ engine uses continuous numeric buffers for TF-IDF scoring.
+Aegis-IR moves the hot information-retrieval kernel out of the JavaScript object heap and into **WebAssembly linear memory**.
 
-The ranking path is shaped around predictable memory access:
+The C++ engine stores TF-IDF data in continuous numeric buffers:
 
 ```text
 term_frequencies[document_index * vocabulary_size + term_index]
 inverse_document_frequency[term_index]
 ```
 
-This gives the engine a compact, deterministic traversal model:
+This layout gives the scoring loop a deterministic memory access pattern: integer reads, floating-point reads, arithmetic, and compact result emission. No JavaScript maps. No per-document JS score objects. No heap-heavy object graph generated during ranking.
 
-```text
-query -> Wasm boundary -> linear-memory TF-IDF loop -> compact result payload -> render
-```
-
-The architecture is strictly **zero-backend**. The browser loads static assets from GitHub Pages, initializes the Wasm search kernel, and executes retrieval locally. JavaScript remains responsible for input handling, telemetry display, and DOM rendering; the ranking loop stays inside C++ linear memory where it avoids V8 heap allocation during scoring.
+The architecture is also strictly **zero-backend**. Aegis-IR ships as static assets, runs directly in the browser, and deploys cleanly on GitHub Pages. JavaScript handles orchestration and rendering; WebAssembly owns the retrieval kernel.
 
 ## Performance Benchmark
 
-The benchmark below models the query-window breakdown for allocation-heavy Vanilla JavaScript search versus the Aegis-IR linear-memory architecture.
+![Aegis-IR Main-Thread Stutter Model](research/benchmark_results.png)
 
 | Execution Segment | Vanilla JS Search | Aegis-IR |
 | --- | ---: | ---: |
@@ -69,25 +68,25 @@ The benchmark below models the query-window breakdown for allocation-heavy Vanil
 | Ranking | 18 ms | 6 ms |
 | **Total** | **111 ms** | **9 ms** |
 
-The key signal is the **Heap GC Pause** row. Aegis-IR is designed so the critical ranking path does not generate transient JavaScript heap pressure, allowing the retrieval loop to avoid GC-induced main-thread blocking.
+The decisive line is **Heap GC Pause**. Vanilla JavaScript search pays for allocation churn with unpredictable collector intervention. Aegis-IR removes that segment from the ranking path by keeping the scoring loop inside Wasm linear memory.
 
 ## Core Tech Stack
 
-- **C++17** for the object-oriented TF-IDF search kernel.
-- **Emscripten** for compiling the C++ engine into WebAssembly.
-- **Vanilla JavaScript** for the Wasm bridge, UI orchestration, and telemetry.
-- **HTML5/CSS3** for the static research workbench.
-- **GitHub Pages** for zero-backend deployment.
+- **C++17**: object-oriented TF-IDF retrieval kernel.
+- **Emscripten**: C++ to WebAssembly compilation pipeline.
+- **Vanilla JavaScript**: Wasm bridge, runtime telemetry, and DOM orchestration.
+- **HTML5/CSS3**: premium static research workbench.
+- **GitHub Pages**: zero-backend deployment surface.
 
 ## Local Replication Steps
 
 ```bash
-git clone https://github.com/liambrooks-lab/Aegis-IR.git
+git clone https://github.com/Voxion-Labs/Aegis-IR.git
 cd Aegis-IR
 python scripts/build_and_serve.py
 ```
 
-Then open the local preview URL printed in the terminal and run queries such as:
+Open the local URL printed by the preview server, then run queries such as:
 
 ```text
 linear memory garbage collection
@@ -95,20 +94,20 @@ main-thread stutter
 tf-idf wasm
 ```
 
-Watch the telemetry panel for **Thread Blocking** and **Memory Allocation** while the browser-native search kernel executes.
+Watch the telemetry panel for **Thread Blocking** and **Memory Allocation** while Aegis-IR executes the search kernel in linear memory.
 
 <div align="center">
 
 ## Author
 
-<img src="MY%20PIC.jpg" width="180" alt="Rudranarayan Jena" style="border-radius:12px; box-shadow:0 18px 50px rgba(0,0,0,0.35);" />
+<img src="MY%20PIC.jpg" width="180" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
 
 ### Crafted by Rudranarayan Jena
 
 **Founder @ Voxion Labs**
 
-*Focused on system-level architectures, deterministic runtime behavior, and polished browser products that turn deep engineering ideas into usable research workbenches.*
+*Focused on system-level architectures, deterministic runtime behavior, and polished browser products that make deep engineering research feel immediate, sharp, and usable.*
 
-**[GitHub: @liambrooks-lab](https://github.com/liambrooks-lab)** · **[Voxion Labs](https://github.com/liambrooks-lab)**
+**[GitHub: @liambrooks-lab](https://github.com/liambrooks-lab)** · **[Voxion Labs](https://github.com/Voxion-Labs)**
 
 </div>
