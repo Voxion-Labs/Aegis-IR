@@ -135,6 +135,33 @@
             line-height: 1.75;
         }
 
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .paper-link {
+            display: inline-flex;
+            align-items: center;
+            min-height: 38px;
+            padding: 0 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(22, 27, 34, 0.82);
+            color: var(--text);
+            font-size: 0.88rem;
+            font-weight: 650;
+            text-decoration: none;
+            transition: border-color 160ms ease, background 160ms ease;
+        }
+
+        .paper-link:hover {
+            border-color: var(--accent);
+            background: rgba(31, 38, 48, 0.96);
+        }
+
         .lab-panel {
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -351,6 +378,11 @@
                 allocation-heavy search work avoids V8 garbage-collection pressure and
                 reduces main-thread stutter.
             </p>
+            <div class="hero-actions">
+                <a class="paper-link" href="Aegis-IR_Research_Paper.pdf" target="_blank" rel="noopener">
+                    Open Research Paper PDF
+                </a>
+            </div>
         </section>
 
         <section class="lab-panel" aria-label="Aegis-IR memory telemetry workbench">

@@ -10,6 +10,8 @@
 
 > **Live Research Workbench:** [Launch Aegis-IR](https://Voxion-Labs.github.io/Aegis-IR/)
 
+> **Research Paper:** [Read the 5-page PDF](research/Aegis-IR_Research_Paper.pdf)
+
 </div>
 
 ## Abstract
@@ -69,6 +71,13 @@ The architecture is also strictly **zero-backend**. Aegis-IR ships as static ass
 | **Total** | **111 ms** | **9 ms** |
 
 The decisive line is **Heap GC Pause**. Vanilla JavaScript search pays for allocation churn with unpredictable collector intervention. Aegis-IR removes that segment from the ranking path by keeping the scoring loop inside Wasm linear memory.
+
+## Research Paper
+
+The formal paper, **"Aegis-IR: Eliminating V8 Garbage Collection Pressure through Deterministic Linear Memory Architecture,"** is included as a five-page PDF with diagrams, tables, the runtime tree, benchmark visualization, telemetry model, limitations, future work, and references.
+
+- [Repository PDF](research/Aegis-IR_Research_Paper.pdf)
+- [Live GitHub Pages PDF](https://Voxion-Labs.github.io/Aegis-IR/Aegis-IR_Research_Paper.pdf)
 
 ## Core Tech Stack
 
