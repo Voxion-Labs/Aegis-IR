@@ -10,7 +10,7 @@
 
 > **Live Research Workbench:** [Launch Aegis-IR](https://Voxion-Labs.github.io/Aegis-IR/)
 
-> **Research Paper:** [Read the 5-page PDF](research/Aegis-IR_Research_Paper.pdf)
+> **Research Paper:** [Read Research Paper](research/Aegis-IR_Research_Paper.pdf)
 
 </div>
 
