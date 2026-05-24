@@ -144,24 +144,24 @@
         }
 
         .paper-link {
-            display: inline-flex;
-            align-items: center;
-            min-height: 38px;
-            padding: 0 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: rgba(22, 27, 34, 0.82);
-            color: var(--text);
-            font-size: 0.88rem;
-            font-weight: 650;
-            text-decoration: none;
-            transition: border-color 160ms ease, background 160ms ease;
-        }
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid #388bfd; 
+    border-radius: 8px;
+    background: var(--accent-strong); /* Blue background */
+    color: #ffffff; /* White text for contrast */
+    font-size: 0.88rem;
+    font-weight: 650;
+    text-decoration: none;
+    transition: background 160ms ease, border-color 160ms ease;
+}
 
-        .paper-link:hover {
-            border-color: var(--accent);
-            background: rgba(31, 38, 48, 0.96);
-        }
+.paper-link:hover {
+    background: #005cc5; /* Hover pe thoda dark blue */
+    border-color: #005cc5;
+}
 
         .lab-panel {
             border: 1px solid var(--border);
@@ -381,7 +381,7 @@
             </p>
             <div class="hero-actions">
                 <a class="paper-link" href="Aegis-IR_Research_Paper.pdf" target="_blank" rel="noopener">
-                    Open Research Paper PDF
+                    Read Aegis-IR Research Paper
                 </a>
             </div>
         </section>
@@ -420,7 +420,7 @@
 
             <div class="memory-note">
                 <strong>Linear memory mode:</strong>
-                <span>The TF-IDF scoring loop traverses compact WebAssembly-owned numeric buffers instead of constructing transient JavaScript objects during ranking.</span>
+               <span>The <strong style="font-size: 1.15em; color: var(--accent);">TF-IDF</strong> scoring loop traverses compact WebAssembly-owned numeric buffers instead of constructing transient JavaScript objects during ranking.</span>
             </div>
 
             <div class="results" id="results">
