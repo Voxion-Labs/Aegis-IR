@@ -115,8 +115,6 @@ Watch the telemetry panel for **Thread Blocking** and **Memory Allocation** whil
 
 **Founder @ Voxion Labs**
 
-*Focused on system-level architectures, deterministic runtime behavior, and polished browser products that make deep engineering research feel immediate, sharp, and usable.*
-
-**[GitHub: @liambrooks-lab](https://github.com/liambrooks-lab)** · **[Voxion Labs](https://github.com/Voxion-Labs)**
+**[GitHub: @liambrooks-lab](https://github.com/liambrooks-lab)** 
 
 </div>
