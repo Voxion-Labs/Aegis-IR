@@ -8,9 +8,9 @@
 ![Architecture](https://img.shields.io/badge/Architecture-Zero--Backend-3fb950?style=for-the-badge)
 ![Kernel](https://img.shields.io/badge/Kernel-C%2B%2B%20Wasm-bc8cff?style=for-the-badge)
 
-> **Live Research Workbench:** [Launch Aegis-IR](https://Voxion-Labs.github.io/Aegis-IR/)
+ **Live Research Workbench:** [Launch Aegis-IR](https://Voxion-Labs.github.io/Aegis-IR/)
 
-> **Research Paper:** [Read Research Paper](research/Aegis-IR_Research_Paper.pdf)
+ **Research Paper:** [Read Research Paper](research/Aegis-IR_Research_Paper.pdf)
 
 </div>
 
@@ -105,16 +105,14 @@ tf-idf wasm
 
 Watch the telemetry panel for **Thread Blocking** and **Memory Allocation** while Aegis-IR executes the search kernel in linear memory.
 
+---
+<br>
+<div align="right">
+  <b>Rudranarayan Jena</b><br>
+  <i>Founder @ Voxion Labs</i>
+</div>
+
+---
 <div align="center">
-
-## Author
-
-<img src="MY%20PIC.jpg" width="180" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-
-### Crafted by Rudranarayan Jena
-
-**Founder @ Voxion Labs**
-
-**[GitHub: @liambrooks-lab](https://github.com/liambrooks-lab)** 
-
+  (c) 2026 Voxion Labs & Rudranarayan Jena
 </div>
